@@ -6,6 +6,10 @@ const character = {
     damageHP: 100,
     elHP: document.getElementById('health-character'),
     elProgressbarHP: document.getElementById('progressbar-character'),
+    changeHP: changeHP,
+    renderHP: renderHP,
+    renderHPlife: renderHPlife,
+    renderProgressbarHP: renderProgressbarHP,
 }
 
 const enemy = {
@@ -14,50 +18,54 @@ const enemy = {
     damageHP:100,
     elHP: document.getElementById('health-enemy'),
     elProgressbarHP: document.getElementById('progressbar-enemy'),
+    changeHP: changeHP,
+    renderHP: renderHP,
+    renderHPlife: renderHPlife,
+    renderProgressbarHP: renderProgressbarHP,
 }
 
 $btn.addEventListener('click', function(){
     console.log('kick');
-    changeHP(random(20), character);
-    changeHP(random(20), enemy);
+    character.changeHP(random(20))
+    enemy.changeHP(random(20))
 });
 
 $btn2.addEventListener('click', function(){
     console.log('kick2');
-    changeHP(10, character);
-    changeHP(10, enemy);
+    character.changeHP(10)
+    enemy.changeHP(10)
 });
 
 function init(){
     console.log('start game!');
-    renderHP(character);
-    renderHP(enemy);
+    character.renderHP();
+    enemy.renderHP();
 }
 
-function renderHP(person){
-    renderHPlife(person);
-    renderProgressbarHP(person);
+function renderHP(){
+    this.renderHPlife();
+    this.renderProgressbarHP();
 }
 
-function renderHPlife(person){
-    person.elHP.innerText = person.damageHP + ' / ' + person.defaultHP;
+function renderHPlife(){
+    this.elHP.innerText = this.damageHP + ' / ' + this.defaultHP;
 }
 
-function renderProgressbarHP(person){
-    person.elProgressbarHP.style.width = person.damageHP + '%'
+function renderProgressbarHP(){
+    this.elProgressbarHP.style.width = this.damageHP + '%'
 }
 
-function changeHP(count, person){
-    if (person.damageHP <= count){
-        person.damageHP = 0;
-        alert(person.name + ' програв!');
+function changeHP(count){
+    if (this.damageHP <= count){
+        this.damageHP = 0;
+        alert(this.name + ' програв!');
         $btn.disabled = true;
         $btn2.disabled = true;
     } else{
-        person.damageHP -= count;
+        this.damageHP -= count;
     }
 
-    renderHP(person);
+    this.renderHP();
 }
 
 function random(num){
