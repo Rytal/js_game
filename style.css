@@ -17,6 +17,7 @@ body {
     padding: 0;
     font-family: "Heebo", sans-serif;
     background: url(./assets/Parkscene_Background.png) center bottom repeat-x, url(./assets/SkyDay.png) center top / cover;
+    background-attachment: fixed, fixed;
     text-align: center;
     user-select: none;
 }

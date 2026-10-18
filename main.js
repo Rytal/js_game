@@ -1,75 +1,103 @@
-const $btn = document.getElementById('btn-kick');
-const $btn2 = document.getElementById('btn-kick2');
+const [$btn, $btn2] = ['btn-kick', 'btn-kick2'].map(id => document.getElementById(id));
+const $logs = document.getElementById('logs');
+
 const character = {
     name: 'Pikachu',
     defaultHP: 100,
     damageHP: 100,
     elHP: document.getElementById('health-character'),
     elProgressbarHP: document.getElementById('progressbar-character'),
-    changeHP: changeHP,
-    renderHP: renderHP,
-    renderHPlife: renderHPlife,
-    renderProgressbarHP: renderProgressbarHP,
-}
+    changeHP,
+    renderHP,
+    renderHPlife,
+    renderProgressbarHP,
+};
 
 const enemy = {
-    name: 'Charizard',
+    name: 'Charmander',
     defaultHP: 100,
-    damageHP:100,
+    damageHP: 100,
     elHP: document.getElementById('health-enemy'),
     elProgressbarHP: document.getElementById('progressbar-enemy'),
-    changeHP: changeHP,
-    renderHP: renderHP,
-    renderHPlife: renderHPlife,
-    renderProgressbarHP: renderProgressbarHP,
+    changeHP,
+    renderHP,
+    renderHPlife,
+    renderProgressbarHP,
+};
+
+function attack({ damageForCharacter, damageForEnemy }) {
+    character.changeHP(damageForCharacter, damage =>
+        addLog({ firstPerson: character, secondPerson: enemy, damage }));
+    enemy.changeHP(damageForEnemy, damage =>
+        addLog({ firstPerson: enemy, secondPerson: character, damage }));
 }
 
-$btn.addEventListener('click', function(){
+$btn.addEventListener('click', () => {
     console.log('kick');
-    character.changeHP(random(20))
-    enemy.changeHP(random(20))
+    attack({ damageForCharacter: random(20), damageForEnemy: random(20) });
 });
 
-$btn2.addEventListener('click', function(){
+$btn2.addEventListener('click', () => {
     console.log('kick2');
-    character.changeHP(10)
-    enemy.changeHP(10)
+    attack({ damageForCharacter: 10, damageForEnemy: 10 });
 });
 
-function init(){
+function init() {
     console.log('start game!');
-    character.renderHP();
-    enemy.renderHP();
+    const [firstFighter, secondFighter] = [character, enemy];
+    firstFighter.renderHP();
+    secondFighter.renderHP();
 }
 
-function renderHP(){
+function renderHP() {
     this.renderHPlife();
     this.renderProgressbarHP();
 }
 
-function renderHPlife(){
-    this.elHP.innerText = this.damageHP + ' / ' + this.defaultHP;
+function renderHPlife() {
+    const { elHP, damageHP, defaultHP } = this;
+    elHP.innerText = `${damageHP} / ${defaultHP}`;
 }
 
-function renderProgressbarHP(){
-    this.elProgressbarHP.style.width = this.damageHP + '%'
+function renderProgressbarHP() {
+    const { elProgressbarHP, damageHP } = this;
+    elProgressbarHP.style.width = `${damageHP}%`;
 }
 
-function changeHP(count){
-    if (this.damageHP <= count){
-        this.damageHP = 0;
-        alert(this.name + ' програв!');
-        $btn.disabled = true;
-        $btn2.disabled = true;
-    } else{
-        this.damageHP -= count;
-    }
+function changeHP(count, cb) {
+    const { name, damageHP } = this;
+    const lost = Math.min(count, damageHP);
 
+    this.damageHP = damageHP - lost;
     this.renderHP();
+    cb?.(lost);
+
+    if (this.damageHP === 0) {
+        [$btn, $btn2].forEach(button => button.disabled = true);
+        setTimeout(() => alert(`${name} програв!`), 100);
+    }
 }
 
-function random(num){
+function random(num) {
     return Math.ceil(Math.random() * num);
 }
 
-init()
+function generateLog({
+    firstPerson: { name: firstName, damageHP, defaultHP },
+    secondPerson: { name: secondName },
+    damage,
+}) {
+    const text = logs[random(logs.length) - 1]
+        .replaceAll('[ПЕРСОНАЖ №1]', firstName)
+        .replaceAll('[ПЕРСОНАЖ №2]', secondName);
+
+    return `${text} -${damage}, [${damageHP}/${defaultHP}]`;
+}
+
+function addLog(logData) {
+    const $p = document.createElement('p');
+    $p.innerText = generateLog(logData);
+    $logs.insertBefore($p, $logs.children[0]);
+}
+
+init();
