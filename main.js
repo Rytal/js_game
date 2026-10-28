@@ -35,11 +35,13 @@ function attack({ damageForCharacter, damageForEnemy }) {
 $btn.addEventListener('click', () => {
     console.log('kick');
     attack({ damageForCharacter: random(20), damageForEnemy: random(20) });
+    counter();
 });
 
 $btn2.addEventListener('click', () => {
     console.log('kick2');
     attack({ damageForCharacter: 10, damageForEnemy: 10 });
+    counter2();
 });
 
 function init() {
@@ -99,5 +101,36 @@ function addLog(logData) {
     $p.innerText = generateLog(logData);
     $logs.insertBefore($p, $logs.children[0]);
 }
+
+
+function kilck(){
+    let i = 0;
+    let limit = 3;
+    return function(){
+        i++;
+        console.log(`Кількість натискань на кнопку Thunder Jolt - ${i}`);
+        limit--;
+        console.log(`Залишилось натискань на кнопку Thunder Jolt - ${limit}`);
+        if(limit == 0){
+            $btn.disabled = true;
+        }
+    }
+}
+const counter = kilck();
+
+function kilck2(){
+    let i = 0;
+    let limit = 3;
+    return function(){
+        i++;
+        console.log(`Кількість натискань на кнопку Flame Tail - ${i}`)
+        limit--;
+        console.log(`Залишилось натискань на кнопку Flame Tail - ${limit}`);
+        if(limit == 0){
+            $btn2.disabled = true;
+        }
+    }
+}
+const counter2 = kilck2();
 
 init();
