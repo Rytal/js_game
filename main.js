@@ -105,7 +105,7 @@ function addLog(logData) {
 
 function kilck(){
     let i = 0;
-    let limit = 3;
+    let limit = 5;
     return function(){
         i++;
         console.log(`Кількість натискань на кнопку Thunder Jolt - ${i}`);
@@ -120,7 +120,7 @@ const counter = kilck();
 
 function kilck2(){
     let i = 0;
-    let limit = 3;
+    let limit = 5;
     return function(){
         i++;
         console.log(`Кількість натискань на кнопку Flame Tail - ${i}`)
